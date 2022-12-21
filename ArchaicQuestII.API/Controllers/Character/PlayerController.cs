@@ -222,13 +222,100 @@ namespace ArchaicQuestII.Controllers.character
 
         }
 
+        [HttpPost]
+        [Route("api/character/edit-player")]
+        public IActionResult EditPlayer([FromBody] Player player)
+        {
+            if (!ModelState.IsValid)
+            {
+                var exception = new Exception("Invalid player");
+                throw exception;
+            }
+            
+            var updatedPlayer = new Player()
+            {
+                AccountId = player.AccountId,
+                Id = player.Id,
+                Name = player.Name,
+                Status = player.Status,
+                Level = player.Level,
+                ArmorRating = new ArmourRating()
+                {
+                    Armour = player.ArmorRating.Armour,
+                    Magic = player.ArmorRating.Magic
+                },
+                Affects = new Affects(),
+                AlignmentScore = player.AlignmentScore,
+                Attributes = player.Attributes,
+                MaxAttributes = player.Attributes,
+                Inventory = player.Inventory,
+                Equipped = player.Equipped,
+                ClassName = player.ClassName,
+                Config = player.Config,
+                Description = player.Description,
+                Gender = player.Gender,
+                Stats = player.Stats,
+                MaxStats = player.Stats,
+                Money = player.Money,
+                Bank = player.Money,
+                Race= player.Race,
+                Skills = player.Skills,
+                Roam = player.Roam,
+                Build = player.Build,
+                Face = player.Face,
+                Skin = player.Skin,
+                Eyes = player.Eyes,
+                FacialHair = player.FacialHair,
+                HairColour = player.HairColour,
+                HairLength = player.HairLength,
+                HairTexture = player.HairTexture,
+                RoomId = player.RoomId,
+                UserRole = player.UserRole,
+                CommandLog = player.CommandLog,
+                Experience = player.Experience,
+                ExperienceToNextLevel = player.ExperienceToNextLevel,
+                TotalExperience = player.TotalExperience,
+                Mounted = player.Mounted,
+                Pets = player.Pets,
+                Practices = player.Practices,
+                Trains = player.Trains,
+                Spells = player.Spells,
+                Title = player.Title,
+                Weight = player.Weight,
+                EnterEmote = player.EnterEmote,
+                LeaveEmote = player.LeaveEmote,
+                DateCreated = player.DateCreated,
+                DateUpdated = DateTime.Now,
+                EventState = player.EventState,
+                LastLoginTime = player.LastLoginTime,
+                JoinedDate = player.JoinedDate,
+                MobDeaths = player.MobDeaths,
+                MobKills = player.MobKills,
+                PlayerDeaths = player.PlayerDeaths,
+                PlayerKills = player.PlayerKills,
+                QuestLog = player.QuestLog,
+                QuestPoints = player.QuestPoints,
+                PlayTime = player.PlayTime,
+            };
+ 
+      
+            if (!string.IsNullOrEmpty(player.Id.ToString()) && player.Id != Guid.Empty)
+            {
+                var foundItem = _pdb.GetById<Character>(player.Id, PlayerDataBase.Collections.Players);
 
+                if (foundItem == null)
+                {
+                    throw new Exception("player Id does not exist");
+                }
 
-        //[HttpGet]
-        //[Route("api/mob/FindMobById")]
-        //public Player FindMobById([FromQuery] Guid id)
-        //{
+                updatedPlayer.Id = player.Id;
+            }
+            
+            _pdb.Save(updatedPlayer, PlayerDataBase.Collections.Players);
 
+            return Ok(updatedPlayer.Id);
+
+        }
 
         [HttpGet]
         [AllowAnonymous]
